@@ -1,7 +1,5 @@
 # tlsplus
 
-## Name
-
 *tlsplus* is an alternative to the existing TLS plugin for CoreDNS, it can be used as a drop in replacement for the exisiting plugin and everything will continue to work.
 What this plugin offers over the current buildin TLS plugin is the ability to generate and manage TLS certificates for you, so that you never have to worry about aquiring or renewing certificates,
 all that will automatically be done for you.
@@ -12,12 +10,14 @@ CoreDNS supports queries that are encrypted using TLS (DNS over Transport Layer 
 or are using gRPC (https://grpc.io/, not an IETF standard). Normally DNS traffic isn't encrypted at
 all (DNSSEC only signs resource records).
 
-The *tls* "plugin" allows you to either have CoreDNS generate and manage certificates for itself or configure the cryptographic keys that are needed for both
-DNS-over-TLS and DNS-over-gRPC. If the *tls* plugin is omitted, then no encryption takes place.
+The *tlsplus* plugin allows you to either have CoreDNS generate and manage certificates for itself or configure the cryptographic keys that are needed for both
+DNS-over-TLS and DNS-over-gRPC.
 
-## Syntax
+## Usage
 
 ### Automatic
+
+When CoreDNS is setup as the autoriative DNS Server for a domain such as `example.com`, all you need to add to your corefile to start serving DoT or DoH is the following:
 
 ~~~ txt
 tlsplus acme {
