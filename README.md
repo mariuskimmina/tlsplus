@@ -2,7 +2,9 @@
 
 ## Name
 
-*tlsplus* generates and manages TLS certificates for DNS over TLS or HTTPS. You can also optionally configure the certificates yourself.
+*tlsplus* is an alternative to the existing TLS plugin for CoreDNS, it can be used as a drop in replacement for the exisiting plugin and everything will continue to work.
+What this plugin offers over the current buildin TLS plugin is the ability to generate and manage TLS certificates for you, so that you never have to worry about aquiring or renewing certificates,
+all that will automatically be done for you.
 
 ## Description
 
