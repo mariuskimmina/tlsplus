@@ -1,8 +1,8 @@
-# tls
+# tlsplus
 
 ## Name
 
-*tls* - allows you to configure the server certificates for the TLS, gRPC, DoH servers.
+*tlsplus* generates and manages TLS certificates for DNS over TLS or HTTPS. You can also optionally configure the certificates yourself.
 
 ## Description
 
@@ -10,13 +10,20 @@ CoreDNS supports queries that are encrypted using TLS (DNS over Transport Layer 
 or are using gRPC (https://grpc.io/, not an IETF standard). Normally DNS traffic isn't encrypted at
 all (DNSSEC only signs resource records).
 
-The *tls* "plugin" allows you to configure the cryptographic keys that are needed for both
+The *tls* "plugin" allows you to either have CoreDNS generate and manage certificates for itself or configure the cryptographic keys that are needed for both
 DNS-over-TLS and DNS-over-gRPC. If the *tls* plugin is omitted, then no encryption takes place.
 
-The gRPC protobuffer is defined in `pb/dns.proto`. It defines the proto as a simple wrapper for the
-wire data of a DNS message.
-
 ## Syntax
+
+### Automatic
+
+~~~ txt
+tlsplus acme {
+    domain example.com
+}
+~~~
+
+### Manual
 
 ~~~ txt
 tls CERT KEY [CA]
