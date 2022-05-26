@@ -1,4 +1,4 @@
-package tls
+package tlsplus
 
 import clog "github.com/coredns/coredns/plugin/pkg/log"
 

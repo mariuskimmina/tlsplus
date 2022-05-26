@@ -1,4 +1,4 @@
-package tls
+package tlsplus
 
 import (
 	ctls "crypto/tls"

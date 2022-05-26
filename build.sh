@@ -6,7 +6,7 @@ cd coredns
 echo "tlsp:github.com/mariuskimmmina/tlsplus" >> plugin.cfg
 
 # Get the modules
-go get github.com/mariuskimmina/coredns-acme
+go get github.com/mariuskimmina/tlsplus
 
 # Generate Files
 go generate
