@@ -10,7 +10,8 @@ import (
 	"github.com/coredns/caddy"
 	"github.com/coredns/coredns/core/dnsserver"
 	"github.com/coredns/coredns/plugin"
-	"github.com/coredns/coredns/plugin/pkg/tls"
+	"github.com/mariuskimmina/tlsplus/tls"
+	"github.com/mariuskimmina/tlsplus/acme"
 )
 
 
@@ -114,7 +115,7 @@ func parseTLS(c *caddy.Controller) (error) {
                     }
                 }
                 config := dnsserver.GetConfig(c)
-                tlsconf, err = tls.NewTLSConfigWithACMEFromArgs(config, domainNameACME)
+                tlsconf, err = acme.NewTLSConfigWithACMEFromArgs(config, domainNameACME)
                 if err != nil {
                     fmt.Println("Error during TLS Config with ACME")
                     fmt.Println(err)

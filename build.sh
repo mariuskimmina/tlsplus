@@ -3,7 +3,7 @@ git clone https://github.com/coredns/coredns
 cd coredns
 
 # Add acme:github.com/chinzhiweiblank/coredns-acme into the plugin configuration
-echo "tlsp:github.com/mariuskimmmina/tlsplus" >> plugin.cfg
+echo "tlsp:github.com/mariuskimmina/tlsplus" >> plugin.cfg
 
 # Get the modules
 go get github.com/mariuskimmina/tlsplus
