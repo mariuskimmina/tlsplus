@@ -46,11 +46,7 @@ func acmeCertPresent() (bool, error) {
     return present, nil
 }
 
-func acmeCertValid() (bool, error) {
-    cert, err := ctls.LoadX509KeyPair(acmeCertFile, acmeKeyFile)
-    if err != nil {
-        return false, fmt.Errorf("could not load TLS cert: %s", err.Error())
-    }
+func acmeCertValid(cert *ctls.Certificate) (bool, error) {
     parsedCert, err := x509.ParseCertificate(cert.Certificate[0])
     if err != nil {
         return false, fmt.Errorf("could not parse TLS cert: %s", err.Error())
@@ -79,26 +75,32 @@ func parseTLS(c *caddy.Controller) (error) {
 
         if args[0] == "acme" {
             certPresent := false
-            certValid := false
+            //certValid := false
             fmt.Println("Starting ACME")
             certPresent, err := acmeCertPresent()
             if err != nil {
                 return err
             }
             if certPresent {
-                certValid, err = acmeCertValid()
-                if err != nil {
-                    return err
-                }
-                if certValid {
-                    fmt.Println("Valid Cert found")
-                } else {
-                    fmt.Println("Cert found but expired")
-                }
+                tlsconf, err = tls.NewTLSConfig(acmeCertFile, acmeKeyFile, "")
+                //  cert, err := ctls.LoadX509KeyPair(acmeCertFile, acmeKeyFile)
+                //if err != nil {
+                    //return fmt.Errorf("could not load TLS cert: %s", err.Error())
+                //}
+                //certValid, err = acmeCertValid(&cert)
+                //if err != nil {
+                    //return err
+                //}
+                //if certValid {
+                    //fmt.Println("Valid Cert found")
+                //} else {
+                    //fmt.Println("Cert found but expired")
+                //}
+
             }
             fmt.Println(certPresent)
-            fmt.Println(certValid)
-            if !certPresent || !certValid {
+            //fmt.Println(certValid)
+            if !certPresent {
                 fmt.Println("No valid Certificate found, creating a new one")
                 var domainNameACME string
                 for c.NextBlock() {
