@@ -82,6 +82,7 @@ func parseTLS(c *caddy.Controller) (error) {
                 return err
             }
             if certPresent {
+                fmt.Println("Loading existing certificate")
                 tlsconf, err = tls.NewTLSConfig(acmeCertFile, acmeKeyFile, "")
                 //  cert, err := ctls.LoadX509KeyPair(acmeCertFile, acmeKeyFile)
                 //if err != nil {
