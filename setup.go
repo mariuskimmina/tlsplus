@@ -74,59 +74,56 @@ func parseTLS(c *caddy.Controller) (error) {
 		clientAuth := ctls.NoClientCert
 
         if args[0] == "acme" {
+            // start of the acme flow,
+            // first check if a certificate is already present
+            fmt.Println("Starting ACME")
             certPresent := false
             //certValid := false
-            fmt.Println("Starting ACME")
             certPresent, err := acmeCertPresent()
             if err != nil {
                 return err
             }
             if certPresent {
+                // TODO: check if the certificate is valid
                 fmt.Println("Loading existing certificate")
                 tlsconf, err = tls.NewTLSConfig(acmeCertFile, acmeKeyFile, "")
-                //  cert, err := ctls.LoadX509KeyPair(acmeCertFile, acmeKeyFile)
-                //if err != nil {
-                    //return fmt.Errorf("could not load TLS cert: %s", err.Error())
-                //}
-                //certValid, err = acmeCertValid(&cert)
-                //if err != nil {
-                    //return err
-                //}
-                //if certValid {
-                    //fmt.Println("Valid Cert found")
-                //} else {
-                    //fmt.Println("Cert found but expired")
-                //}
+                fmt.Println("Certificate aleady there")
+
+                tlsconf.ClientAuth = clientAuth
+                // NewTLSConfigs only sets RootCAs, so we need to let ClientCAs refer to it.
+                tlsconf.ClientCAs = tlsconf.RootCAs
+                config.TLSConfig = tlsconf
+                return nil
 
             }
-            fmt.Println(certPresent)
-            //fmt.Println(certValid)
-            if !certPresent {
-                fmt.Println("No valid Certificate found, creating a new one")
-                var domainNameACME string
-                for c.NextBlock() {
-                    fmt.Println("ACME Block Found")
-                    switch c.Val() {
-                    case "domain":
-                        fmt.Println("Found Keyword Domain")
-                        domainArgs := c.RemainingArgs()
-                        if len(domainArgs) > 1 {
-                            return plugin.Error("tls", c.Errf("To many arguments to domain"))
-                        }
-                        domainNameACME = domainArgs[0]
-                        fmt.Println(domainNameACME)
+            fmt.Println("No valid Certificate found, creating a new one")
+            var domainNameACME string
+            for c.NextBlock() {
+                fmt.Println("ACME Block Found")
+                switch c.Val() {
+                case "domain":
+                    fmt.Println("Found Keyword Domain")
+                    domainArgs := c.RemainingArgs()
+                    if len(domainArgs) > 1 {
+                        return plugin.Error("tls", c.Errf("To many arguments to domain"))
                     }
-                }
-                config := dnsserver.GetConfig(c)
-                tlsconf, err = acme.NewTLSConfigWithACMEFromArgs(config, domainNameACME)
-                if err != nil {
-                    fmt.Println("Error during TLS Config with ACME")
-                    fmt.Println(err)
+                    domainNameACME = domainArgs[0]
+                    fmt.Println(domainNameACME)
                 }
             }
+            config := dnsserver.GetConfig(c)
+            tlsconf, err = acme.NewTLSConfigWithACMEFromArgs(config, domainNameACME)
+            if err != nil {
+                fmt.Println("Error during TLS Config with ACME")
+                fmt.Println(err)
+            }
+            tlsconf, err = tls.NewTLSConfig(acmeCertFile, acmeKeyFile, "")
             fmt.Println("Certificate aleady there")
+
+            tlsconf.ClientAuth = clientAuth
+            // NewTLSConfigs only sets RootCAs, so we need to let ClientCAs refer to it.
+            tlsconf.ClientCAs = tlsconf.RootCAs
             config.TLSConfig = tlsconf
-            return nil
         } else {
             fmt.Println("NOOO ACME")
             if len(args) < 2 || len(args) > 3 {
