@@ -123,6 +123,7 @@ func parseTLS(c *caddy.Controller) (error) {
             }
             fmt.Println("Certificate aleady there")
             config.TLSConfig = tlsconf
+            return nil
         } else {
             fmt.Println("NOOO ACME")
             if len(args) < 2 || len(args) > 3 {
