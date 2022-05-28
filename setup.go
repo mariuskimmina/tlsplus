@@ -88,7 +88,9 @@ func parseTLS(c *caddy.Controller) (error) {
                 // TODO: check if the certificate is valid
                 fmt.Println("Loading existing certificate")
                 tlsconf, err = tls.NewTLSConfig(acmeCertFile, acmeKeyFile, "")
-                fmt.Println("Certificate aleady there")
+                if err != nil {
+                    return err
+                }
 
                 configureTLS(config, tlsconf, clientAuth)
                 return nil
@@ -97,7 +99,7 @@ func parseTLS(c *caddy.Controller) (error) {
             fmt.Println("No valid Certificate found, creating a new one")
             var domainNameACME string
             for c.NextBlock() {
-                fmt.Println("ACME Block Found")
+                fmt.Println("ACME Config Block Found")
                 switch c.Val() {
                 case "domain":
                     fmt.Println("Found Keyword Domain")
@@ -123,7 +125,6 @@ func parseTLS(c *caddy.Controller) (error) {
                 return plugin.Error("tls", c.ArgErr())
             }
             for c.NextBlock() {
-                fmt.Println("Next Block")
                 switch c.Val() {
                 case "client_auth":
                     authTypeArgs := c.RemainingArgs()
@@ -145,7 +146,6 @@ func parseTLS(c *caddy.Controller) (error) {
                         return c.Errf("unknown authentication type '%s'", authTypeArgs[0])
                     }
                 default:
-                    fmt.Println("Default error")
                     return c.Errf("unknown option '%s'", c.Val())
                 }
             }
