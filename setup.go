@@ -60,18 +60,19 @@ func parseTLS(c *caddy.Controller) (error) {
     //args := c.RemainingArgs()
     //fmt.Printf("starting to parse tls config - args: %s \n", args)
 	config := dnsserver.GetConfig(c)
+    var tlsconf *ctls.Config
+    var err error
+    clientAuth := ctls.NoClientCert
 
 	if config.TLSConfig != nil {
 		return plugin.Error("tls", c.Errf("TLS already configured for this server instance"))
 	}
     i := 1
 	for c.Next() {
-        var tlsconf *ctls.Config
         fmt.Printf("Run number: %d \n", i)
         i++
         args := c.RemainingArgs()
         fmt.Printf("remaining args: %s \n", args)
-		clientAuth := ctls.NoClientCert
 
         if args[0] == "acme" {
             // start of the acme flow,
@@ -89,10 +90,7 @@ func parseTLS(c *caddy.Controller) (error) {
                 tlsconf, err = tls.NewTLSConfig(acmeCertFile, acmeKeyFile, "")
                 fmt.Println("Certificate aleady there")
 
-                tlsconf.ClientAuth = clientAuth
-                // NewTLSConfigs only sets RootCAs, so we need to let ClientCAs refer to it.
-                tlsconf.ClientCAs = tlsconf.RootCAs
-                config.TLSConfig = tlsconf
+                configureTLS(config, tlsconf, clientAuth)
                 return nil
 
             }
@@ -119,13 +117,8 @@ func parseTLS(c *caddy.Controller) (error) {
             }
             tlsconf, err = tls.NewTLSConfig(acmeCertFile, acmeKeyFile, "")
             fmt.Println("Certificate aleady there")
-
-            tlsconf.ClientAuth = clientAuth
-            // NewTLSConfigs only sets RootCAs, so we need to let ClientCAs refer to it.
-            tlsconf.ClientCAs = tlsconf.RootCAs
-            config.TLSConfig = tlsconf
         } else {
-            fmt.Println("NOOO ACME")
+            fmt.Println("Uing manually conigured certificate")
             if len(args) < 2 || len(args) > 3 {
                 return plugin.Error("tls", c.ArgErr())
             }
@@ -156,16 +149,12 @@ func parseTLS(c *caddy.Controller) (error) {
                     return c.Errf("unknown option '%s'", c.Val())
                 }
             }
-            tlsconf, err := tls.NewTLSConfigFromArgs(args...)
+            tlsconf, err = tls.NewTLSConfigFromArgs(args...)
             if err != nil {
                 return err
             }
-            tlsconf.ClientAuth = clientAuth
-            // NewTLSConfigFromArgs only sets RootCAs, so we need to let ClientCAs refer to it.
-            tlsconf.ClientCAs = tlsconf.RootCAs
-
-            config.TLSConfig = tlsconf
         }
 	}
+    configureTLS(config, tlsconf, clientAuth)
 	return nil
 }
