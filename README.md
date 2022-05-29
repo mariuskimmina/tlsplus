@@ -57,10 +57,14 @@ at \_acme\_challenge.example.com.
 
 ![ACME in CoreDNS](images/ACME2.drawio.png)
 
+Once the ACME Client has proven ownership of a domain it can request, renew and revoke certificates for it through the
+ACME Server.
+
 ## How this plugin integrates ACME into CoreDNS
 
 Here is a diagramm that simplifies the ACME flow and show's how it is being integrated into CoreDNS.
 CoreDNS in this case is both, an ACME Client and the DNS Server responsible for setting up TXT records.
+
 ![ACME in CoreDNS](images/acme-in-coredns-simplified.drawio.png)
 
 [ACME]: https://datatracker.ietf.org/doc/html/rfc8555
