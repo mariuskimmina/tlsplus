@@ -35,6 +35,22 @@ tls CERT KEY [CA]
 
 Parameter CA is optional. If not set, system CAs can be used to verify the client certificate
 
+## Test setup
+Currently, the plugin is hardcoded to use a local [Pebble][Pebble] server, which needs to be running for this to work.
+Further more, you need to make CoreDNS your primary DNS Server, by setting it as a namesever in `/etc/resolv.conf`, so that
+Pebble will reach out to it when executing the ACME challenge.
+
+Example Corefile:
+
+```
+tls://.:53 {
+    tls acme {
+        domain example.com
+    }
+    forward . 8.8.8.8
+    log
+}
+```
 
 ## How ACME works
 
@@ -70,3 +86,4 @@ CoreDNS in this case is both, an ACME Client and the DNS Server responsible for 
 [ACME]: https://datatracker.ietf.org/doc/html/rfc8555
 [Let's Encrypt]: https://letsencrypt.org/
 [client-server]: https://en.wikipedia.org/wiki/Client%E2%80%93server_model
+[Pebble]: https://github.com/letsencrypt/pebble
