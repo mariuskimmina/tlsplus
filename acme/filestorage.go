@@ -9,9 +9,8 @@ import (
 )
 
 type FileStorage struct {
-    Path string
+	Path string
 }
-
 
 // Exists returns true if key exists in s.
 func (s *FileStorage) Exists(_ context.Context, key string) bool {
@@ -44,4 +43,3 @@ func (s *FileStorage) Delete(_ context.Context, key string) error {
 func (s *FileStorage) Filename(key string) string {
 	return filepath.Join(s.Path, filepath.FromSlash(key))
 }
-

@@ -54,28 +54,28 @@ func setTLSDefaults(ctls *tls.Config) {
 //  - the other end will authenticate this end via the provided cert
 //  - this end will verify the other end's cert using the specified CA
 func NewTLSConfigFromArgs(args ...string) (*tls.Config, error) {
-    fmt.Println("NewTLSConfigFromArgs")
+	fmt.Println("NewTLSConfigFromArgs")
 	var err error
 	var c *tls.Config
 	switch len(args) {
 	case 0:
-        fmt.Println("Args 0")
+		fmt.Println("Args 0")
 		// No client cert, use system CA
 		c, err = NewTLSClientConfig("")
 	case 1:
-        fmt.Println("Args 1")
+		fmt.Println("Args 1")
 		// No client cert, use specified CA
 		c, err = NewTLSClientConfig(args[0])
 	case 2:
-        fmt.Println("Args 2")
+		fmt.Println("Args 2")
 		// Client cert, use system CA
 		c, err = NewTLSConfig(args[0], args[1], "")
 	case 3:
-        fmt.Println("Args 3")
+		fmt.Println("Args 3")
 		// Client cert, use specified CA
 		c, err = NewTLSConfig(args[0], args[1], args[2])
 	default:
-        fmt.Println("CASE default")
+		fmt.Println("CASE default")
 		err = fmt.Errorf("maximum of three arguments allowed for TLS config, found %d", len(args))
 	}
 	if err != nil {

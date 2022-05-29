@@ -1,9 +1,9 @@
 package acme
 
 type Config struct {
-    RenewalWindowRatio float64
+	RenewalWindowRatio float64
 
-    ServerName string
+	ServerName string
 
-    Storage Storage
+	Storage Storage
 }

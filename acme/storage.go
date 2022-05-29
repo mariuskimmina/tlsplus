@@ -2,7 +2,6 @@ package acme
 
 import "context"
 
-
 type Storage interface {
 	// Locker provides atomic synchronization
 	// operations, making Storage safe to share.

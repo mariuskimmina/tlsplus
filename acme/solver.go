@@ -15,23 +15,23 @@ import (
 )
 
 type DNSSolver struct {
-    Addr string
-    Config *dnsserver.Config
-    DNS *ACMEServer
+	Addr   string
+	Config *dnsserver.Config
+	DNS    *ACMEServer
 }
 
 type ACMEServer struct {
-    m sync.Mutex     // protects the servers
-    server *dns.Server // 0 is a net.Listener, 1 is a net.PacketConn (a *UDPConn) in our case.
+	m      sync.Mutex  // protects the servers
+	server *dns.Server // 0 is a net.Listener, 1 is a net.PacketConn (a *UDPConn) in our case.
 }
 
 var (
-    ch chan string
+	ch chan string
 )
 
 func NewACMEServer(addr string) *ACMEServer {
-    as := &ACMEServer{}
-    return as
+	as := &ACMEServer{}
+	return as
 }
 
 const (
@@ -47,37 +47,36 @@ type (
 	LoopKey struct{}
 )
 
-
 func (as *ACMEServer) ServePacket(p net.PacketConn, challenge acme.Challenge) error {
-    fmt.Println("ACMEServer Starting to serve UDP!!!!!!!!!")
+	fmt.Println("ACMEServer Starting to serve UDP!!!!!!!!!")
 	as.m.Lock()
-    fmt.Println("Still ACMEServer Starting to serve UDP!!!!!!!!!")
+	fmt.Println("Still ACMEServer Starting to serve UDP!!!!!!!!!")
 	as.server = &dns.Server{PacketConn: p, Net: "udp", Handler: dns.HandlerFunc(func(w dns.ResponseWriter, r *dns.Msg) {
-        acme_request := true
-        fmt.Println("ACMEHandler Handling DNS Challenge UDP!!!!")
-        state := request.Request{W: w, Req: r}
-        hdr := dns.RR_Header{Name: state.QName(), Rrtype: dns.TypeTXT, Class: dns.ClassANY, Ttl: 0}
-        m := new(dns.Msg)
-        m.SetReply(r)
-        if state.QType() != dns.TypeTXT {
-            fmt.Println("Received Wrong DNS Request")
-            acme_request = false
-        }
+		acme_request := true
+		fmt.Println("ACMEHandler Handling DNS Challenge UDP!!!!")
+		state := request.Request{W: w, Req: r}
+		hdr := dns.RR_Header{Name: state.QName(), Rrtype: dns.TypeTXT, Class: dns.ClassANY, Ttl: 0}
+		m := new(dns.Msg)
+		m.SetReply(r)
+		if state.QType() != dns.TypeTXT {
+			fmt.Println("Received Wrong DNS Request")
+			acme_request = false
+		}
 
-        if !(strings.HasPrefix(state.Name(), "_acme-challenge")) {
-            fmt.Println("Received Something else!")
-            acme_request = false
-        }
+		if !(strings.HasPrefix(state.Name(), "_acme-challenge")) {
+			fmt.Println("Received Something else!")
+			acme_request = false
+		}
 
-        if acme_request {
-            fmt.Println("Received ACME Challenge!")
-            m.Answer = append(m.Answer, &dns.TXT{Hdr: hdr, Txt: []string{challenge.DNS01KeyAuthorization()}})
-            fmt.Println(m)
-            w.WriteMsg(m)
-            fmt.Println("Done handling ACME Challenge UDP!!!!")
-        } else {
-            fmt.Println("Ignoring DNS request:", state.Name())
-        }
+		if acme_request {
+			fmt.Println("Received ACME Challenge!")
+			m.Answer = append(m.Answer, &dns.TXT{Hdr: hdr, Txt: []string{challenge.DNS01KeyAuthorization()}})
+			fmt.Println(m)
+			w.WriteMsg(m)
+			fmt.Println("Done handling ACME Challenge UDP!!!!")
+		} else {
+			fmt.Println("Ignoring DNS request:", state.Name())
+		}
 	})}
 	as.m.Unlock()
 
@@ -90,41 +89,41 @@ func (as *ACMEServer) ServePacket(p net.PacketConn, challenge acme.Challenge) er
 // for CoreDNS that means that we need to start the DNS Server,
 // serve exactly one request and
 func (d *DNSSolver) Present(ctx context.Context, challenge acme.Challenge) error {
-    fmt.Println("Starting to solve the challenge!")
-    var config []*dnsserver.Config
-    config = append(config, d.Config)
+	fmt.Println("Starting to solve the challenge!")
+	var config []*dnsserver.Config
+	config = append(config, d.Config)
 
-    as := NewACMEServer(d.Addr)
-    d.DNS = as
+	as := NewACMEServer(d.Addr)
+	d.DNS = as
 
-    addr := net.UDPAddr{
-        Port: 53,
-        IP: net.ParseIP("127.0.0.1"),
-    }
+	addr := net.UDPAddr{
+		Port: 53,
+		IP:   net.ParseIP("127.0.0.1"),
+	}
 
-    // l, err := net.Listen("tcp", d.Addr)
-    l, err := net.ListenUDP("udp", &addr)
-    if err != nil {
-        fmt.Println("Failed to create Listener")
-        fmt.Println(err)
-    }
+	// l, err := net.Listen("tcp", d.Addr)
+	l, err := net.ListenUDP("udp", &addr)
+	if err != nil {
+		fmt.Println("Failed to create Listener")
+		fmt.Println(err)
+	}
 
-    go func() {
-        err := as.ServePacket(l, challenge)
-        if err != nil {
-            fmt.Println("Received Error from ServePacket")
-            fmt.Println(err)
-        }
-        fmt.Println("ACME DNS Server has been shutdown!")
-    }()
-    fmt.Println("DNS Server should be up")
-    return nil
+	go func() {
+		err := as.ServePacket(l, challenge)
+		if err != nil {
+			fmt.Println("Received Error from ServePacket")
+			fmt.Println(err)
+		}
+		fmt.Println("ACME DNS Server has been shutdown!")
+	}()
+	fmt.Println("DNS Server should be up")
+	return nil
 }
 
 func (d *DNSSolver) Wait(ctx context.Context, challenge acme.Challenge) error {
-    fmt.Println("We Waitin")
-    time.Sleep(10 * time.Second)
-    return nil
+	fmt.Println("We Waitin")
+	time.Sleep(10 * time.Second)
+	return nil
 }
 
 // CleanUp is called after a challenge is finished, whether
@@ -132,11 +131,11 @@ func (d *DNSSolver) Wait(ctx context.Context, challenge acme.Challenge) error {
 // allocated/created during Present. It SHOULD NOT require
 // that Present ran successfully. It MUST return quickly.
 func (d *DNSSolver) CleanUp(ctx context.Context, challenge acme.Challenge) error {
-    fmt.Println("Cleaning Up!")
-    err := d.DNS.server.Shutdown()
-    if err != nil {
-        fmt.Println("Error shutting down")
-        fmt.Println(err)
-    }
-    return nil
+	fmt.Println("Cleaning Up!")
+	err := d.DNS.server.Shutdown()
+	if err != nil {
+		fmt.Println("Error shutting down")
+		fmt.Println(err)
+	}
+	return nil
 }
