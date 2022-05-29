@@ -1,6 +1,7 @@
 package acme
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/mholt/acmez"
@@ -19,9 +20,14 @@ func NewACMEManager(cfg *Config) (*AcmeManager, error) {
 	}
 
 	return &AcmeManager{
-		CA:          "Let's Encrypt",
+		CA:          "https://127.0.0.1:14000/dir", //pebble
 		Email:       "Test@test.test",
 		DNS01Solver: &DNSSolver{},
 		Config:      cfg,
 	}, nil
+}
+
+
+func (AcmeManager) renewManagedCertificates(ctx context.Context) error {
+
 }

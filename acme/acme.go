@@ -27,6 +27,17 @@ func encodeKey(privateKey *ecdsa.PrivateKey) []byte {
 	return pemEncoded
 }
 
+func StartACME(conf *dnsserver.Config, domainName string) (*tls.Config, error) {
+    storage := NewFileStorage(etcDir)
+    config := NewConfig(domainName, storage)
+    manager, err := NewACMEManager(config)
+    if err != nil {
+        return nil, err
+    }
+
+    return nil, nil
+}
+
 func NewTLSConfigWithACMEFromArgs(conf *dnsserver.Config, domainName string) (*tls.Config, error) {
 	fmt.Println("NewTLSConfigWithACMEFromArgs")
 	fmt.Printf("Let's get a cert for: %s \n", domainName)

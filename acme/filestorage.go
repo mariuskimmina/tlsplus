@@ -12,6 +12,12 @@ type FileStorage struct {
 	Path string
 }
 
+func NewFileStorage(path string) *FileStorage {
+    return &FileStorage{
+        Path: path,
+    }
+}
+
 // Exists returns true if key exists in s.
 func (s *FileStorage) Exists(_ context.Context, key string) bool {
 	_, err := os.Stat(s.Filename(key))
