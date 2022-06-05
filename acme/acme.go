@@ -28,18 +28,32 @@ func encodeKey(privateKey *ecdsa.PrivateKey) []byte {
 }
 
 func StartACME(conf *dnsserver.Config, domainName string) (*tls.Config, error) {
+	fmt.Println("StartACME")
     storage := NewFileStorage(etcDir)
     config := NewConfig(domainName, storage)
     manager, err := NewACMEManager(config)
     if err != nil {
         return nil, err
     }
+    // check if a certificate already exists
 
-    return nil, nil
+    // start renewal loop for this existing certificate
+
+    // obtain a certificate
+    tlsconf, err := manager.obtainCertificate(conf, domainName)
+    if err != nil {
+        return nil, err
+    }
+
+    // start renewal loop for this newly obtained certificate
+    go manager.RenewalLoop()
+
+	fmt.Println("End of StartACME")
+    return tlsconf, nil
 }
 
-func NewTLSConfigWithACMEFromArgs(conf *dnsserver.Config, domainName string) (*tls.Config, error) {
-	fmt.Println("NewTLSConfigWithACMEFromArgs")
+func (m *AcmeManager) obtainCertificate(conf *dnsserver.Config, domainName string) (*tls.Config, error) {
+	fmt.Println("Start obtainCertificate")
 	fmt.Printf("Let's get a cert for: %s \n", domainName)
 
 	domains := []string{domainName}
@@ -225,7 +239,7 @@ func NewTLSConfigWithACMEFromArgs(conf *dnsserver.Config, domainName string) (*t
 		Certificates: tlsCerts,
 	}
 	//var err error
-	fmt.Println("End of NewTLSConfigWithACMEFromArgs")
+	fmt.Println("End of obtainCertificate")
 	return tls, nil
 }
 

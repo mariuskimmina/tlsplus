@@ -29,5 +29,5 @@ func NewACMEManager(cfg *Config) (*AcmeManager, error) {
 
 
 func (AcmeManager) renewManagedCertificates(ctx context.Context) error {
-
+    return nil
 }

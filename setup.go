@@ -115,7 +115,7 @@ func parseTLS(c *caddy.Controller) error {
 				}
 			}
 			config := dnsserver.GetConfig(c)
-			tlsconf, err = acme.NewTLSConfigWithACMEFromArgs(config, domainNameACME)
+			tlsconf, err = acme.StartACME(config, domainNameACME)
 			if err != nil {
 				fmt.Println("Error during TLS Config with ACME")
 				fmt.Println(err)
