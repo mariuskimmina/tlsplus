@@ -1,0 +1,7 @@
+tls://.:54 {
+    tls acme {
+        domain example.com
+    }
+    forward . 8.8.8.8
+    log
+}
