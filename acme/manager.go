@@ -20,7 +20,7 @@ func NewACMEManager(cfg *Config) (*AcmeManager, error) {
 	}
 
 	return &AcmeManager{
-		CA:          "https://127.0.0.1:14000/dir", //pebble
+		CA:          "https://pebble:14000/dir", //pebble
 		Email:       "Test@test.test",
 		DNS01Solver: &DNSSolver{},
 		Config:      cfg,
