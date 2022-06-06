@@ -36,7 +36,7 @@ tls CERT KEY [CA]
 Parameter CA is optional. If not set, system CAs can be used to verify the client certificate
 
 ## Test setup
-Tests are run via docker-compose, the compose file will setup a [Pebble][Pebble] server and a CoreDNS server with this tlsplugin (defined in the Dockerfile).
+Tests are run via docker-compose, the compose file will setup a [Pebble][Pebble] server and a CoreDNS server with this _tlsplus_ plugin (defined in the Dockerfile).
 The Pebble server is configured to use the CoreDNS container as it's primary DNS server. The Corefile that is used for the tests can be found [here](test/Corefile).
 
 ```
