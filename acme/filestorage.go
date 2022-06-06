@@ -18,9 +18,9 @@ type FileStorage struct {
 }
 
 func NewFileStorage(path string) *FileStorage {
-    return &FileStorage{
-        Path: path,
-    }
+	return &FileStorage{
+		Path: path,
+	}
 }
 
 // Exists returns true if key exists in s.
@@ -84,8 +84,8 @@ func (s *FileStorage) List(ctx context.Context, prefix string, recursive bool) (
 }
 
 // Stat returns information about key.
-func (s *FileStorage) Stat(_ context.Context, key string) (error) {
-    return nil
+func (s *FileStorage) Stat(_ context.Context, key string) error {
+	return nil
 }
 
 // Filename returns the key as a path on the file
@@ -97,18 +97,17 @@ func (s *FileStorage) Filename(key string) string {
 // Lock obtains a lock named by the given key. It blocks
 // until the lock can be obtained or an error is returned.
 func (s *FileStorage) Lock(ctx context.Context, key string) error {
-    return nil
+	return nil
 }
 
 // Unlock releases the lock for name.
 func (s *FileStorage) Unlock(_ context.Context, key string) error {
-    return nil
+	return nil
 }
 
 func (s *FileStorage) String() string {
 	return "FileStorage:" + s.Path
 }
-
 
 // atomicallyCreateFile atomically creates the file
 // identified by filename if it doesn't already exist.
@@ -183,4 +182,3 @@ const fileLockPollInterval = 1 * time.Second
 
 // Interface guard
 var _ Storage = (*FileStorage)(nil)
-

@@ -29,27 +29,27 @@ func encodeKey(privateKey *ecdsa.PrivateKey) []byte {
 
 func StartACME(conf *dnsserver.Config, domainName string) (*tls.Config, error) {
 	fmt.Println("StartACME")
-    storage := NewFileStorage(etcDir)
-    config := NewConfig(domainName, storage)
-    manager, err := NewACMEManager(config)
-    if err != nil {
-        return nil, err
-    }
-    // check if a certificate already exists
+	storage := NewFileStorage(etcDir)
+	config := NewConfig(domainName, storage)
+	manager, err := NewACMEManager(config)
+	if err != nil {
+		return nil, err
+	}
+	// check if a certificate already exists
 
-    // start renewal loop for this existing certificate
+	// start renewal loop for this existing certificate
 
-    // obtain a certificate
-    tlsconf, err := manager.obtainCertificate(conf, domainName)
-    if err != nil {
-        return nil, err
-    }
+	// obtain a certificate
+	tlsconf, err := manager.obtainCertificate(conf, domainName)
+	if err != nil {
+		return nil, err
+	}
 
-    // start renewal loop for this newly obtained certificate
-    go manager.RenewalLoop()
+	// start renewal loop for this newly obtained certificate
+	go manager.RenewalLoop()
 
 	fmt.Println("End of StartACME")
-    return tlsconf, nil
+	return tlsconf, nil
 }
 
 func (m *AcmeManager) obtainCertificate(conf *dnsserver.Config, domainName string) (*tls.Config, error) {
