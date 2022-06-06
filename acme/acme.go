@@ -77,7 +77,7 @@ func (m *AcmeManager) obtainCertificate(conf *dnsserver.Config, domainName strin
 		return nil, fmt.Errorf("parsing generated CSR: %v", err)
 	}
 
-	fmt.Println("Creating Account PKey")
+	fmt.Println("Creating Account PKey !!!!!!!!!!!! Testing is running !!!!!!!!!!!!!!!!!!!")
 	accountPrivateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
 	if err != nil {
 		return nil, fmt.Errorf("generating account key: %v", err)
@@ -90,7 +90,7 @@ func (m *AcmeManager) obtainCertificate(conf *dnsserver.Config, domainName strin
 	}
 
 	client := &acme.Client{
-		Directory: "https://127.0.0.1:14000/dir", // default pebble endpoint
+		Directory: "https://pebble:14000/dir", // default pebble endpoint
 		HTTPClient: &http.Client{
 			Transport: &http.Transport{
 				TLSClientConfig: &tls.Config{

@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  pebble:
+    hostname: pebble
+    container_name: pebble
+    image: letsencrypt/pebble
+    command: pebble
+    ports:
+      - 14000:14000  # ACME port
+      - 15000:15000  # Management port
+
+  coredns:
+    hostname: coredns
+    container_name: coredns
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - pebble
+
