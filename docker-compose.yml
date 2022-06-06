@@ -5,7 +5,7 @@ services:
     hostname: pebble
     container_name: pebble
     image: letsencrypt/pebble
-    command: pebble
+    command: pebble -dnsserver coredns:53
     ports:
       - 14000:14000  # ACME port
       - 15000:15000  # Management port
