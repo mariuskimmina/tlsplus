@@ -90,7 +90,7 @@ func (m *AcmeManager) obtainCertificate(conf *dnsserver.Config, domainName strin
 	}
 
 	client := &acme.Client{
-		Directory: "https://127.0.0.1:14000/dir", // default pebble endpoint
+		Directory: "https://pebble:14000/dir", // default pebble endpoint
 		HTTPClient: &http.Client{
 			Transport: &http.Transport{
 				TLSClientConfig: &tls.Config{

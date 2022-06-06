@@ -7,7 +7,7 @@ cd coredns
 # step 2. replace the tls plugin with tlsplus
 sed -i '/tls:tls/c\tls:github.com/mariuskimmina/tlsplus' plugin.cfg
 
-go get -u github.com/mariuskimmina/tlsplus@certificate-management
+go get -u github.com/mariuskimmina/tlsplus@testing
 go mod tidy
 make
 
