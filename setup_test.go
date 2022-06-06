@@ -29,7 +29,7 @@ func TestTLS(t *testing.T) {
 		{"tls test_cert.pem test_key.pem test_ca.pem {\nclient_auth\n}", true, "", "Wrong argument"},
 		{"tls test_cert.pem test_key.pem test_ca.pem {\nclient_auth none bogus\n}", true, "", "Wrong argument"},
 		{"tls test_cert.pem test_key.pem test_ca.pem {\nclient_auth bogus\n}", true, "", "unknown authentication type"},
-        //{"tls acme { domain example.com }", false, "", ""},
+		//{"tls acme { domain example.com }", false, "", ""},
 	}
 
 	for i, test := range tests {
