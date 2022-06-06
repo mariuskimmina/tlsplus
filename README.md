@@ -36,21 +36,33 @@ tls CERT KEY [CA]
 Parameter CA is optional. If not set, system CAs can be used to verify the client certificate
 
 ## Test setup
-Currently, the plugin is hardcoded to use a local [Pebble][Pebble] server, which needs to be running for this to work.
-Further more, you need to make CoreDNS your primary DNS Server, by setting it as a namesever in `/etc/resolv.conf`, so that
-Pebble will reach out to it when executing the ACME challenge.
-
-Example Corefile:
+Tests are run via docker-compose, the compose file will setup a [Pebble][Pebble] server and a CoreDNS server with this tlsplugin (defined in the Dockerfile).
+The Pebble server is configured to use the CoreDNS container as it's primary DNS server. The Corefile that is used for the tests can be found [here](test/Corefile).
 
 ```
-tls://.:53 {
-    tls acme {
-        domain example.com
-    }
-    forward . 8.8.8.8
-    log
-}
+version: '3'
+
+services:
+  pebble:
+    hostname: pebble
+    container_name: pebble
+    image: letsencrypt/pebble
+    command: pebble -dnsserver coredns:53
+    ports:
+      - 14000:14000  # ACME port
+      - 15000:15000  # Management port
+
+  coredns:
+    hostname: coredns
+    container_name: coredns
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      - pebble
 ```
+
+
 
 ## How ACME works
 
